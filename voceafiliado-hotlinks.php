@@ -1,7 +1,7 @@
 <?php
 /*
-Plugin Name: VocêAfiliado Hot Links
-Description: Plugin que instala o Hot Links do VocêAfiliado ao seu blog.
+Plugin Name: VocêAfiliado
+Description: Plugin oficial do VocêAfiliado.
 Author: voceafiliado.com
 Version: 1.0
 Author URI: http://www.voceafiliado.com
