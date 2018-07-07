@@ -1,4 +1,4 @@
-<?
+<?php
 
 /**
  * Objeto de PHP que gera SQL (post) automaticamente.

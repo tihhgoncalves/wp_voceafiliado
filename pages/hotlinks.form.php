@@ -1,4 +1,4 @@
-<?
+<?php
 global $wpdb;
 
 if(!empty(@$_GET['id'])){
@@ -27,11 +27,11 @@ hotlinks_html_head();
 ?>
 <form action="admin.php?page=vca_hotlinks&a=post" method="post">
 
-  <?
+  <?php
   if(!empty(@$_GET['id'])){
     ?>
     <input type="hidden" name="ID" value="<?= $_GET['id']; ?>">
-    <?
+    <?php
   }
   ?>
 
@@ -43,7 +43,7 @@ hotlinks_html_head();
     <td>
 
       <select name="Pages[]" id="Pages" required multiple>
-        <?
+        <?php
         foreach($paginas as $pagina) {
 
           switch($pagina['post_type']) {
@@ -63,7 +63,7 @@ hotlinks_html_head();
           }
           ?>
           <option value="<?= $pagina['ID']; ?>" <?= $selected ?> ><?= '[' . $tipo . '] ' . $pagina['post_title'] . ($pagina['post_type'] == 'post'?' - ' . get_the_date('d/m/Y', $pagina['ID']):null); ?></option>
-          <?
+          <?php
         }
         ?>
       </select>

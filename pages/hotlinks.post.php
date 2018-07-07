@@ -1,4 +1,4 @@
-<?
+<?php
 //die(print_r($_POST, true));
 
 if(!isset($_POST))

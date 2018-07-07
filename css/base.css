@@ -11,3 +11,7 @@
 .vca select {
   height: 175px!important;
 }
+.vca_dashboard ul li {
+  list-style: disc;
+  margin-left: 40px;
+}

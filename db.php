@@ -1,4 +1,4 @@
-<?
+<?php
 
 /* Instalação */
 function vca_verificacoes_de_db() {
