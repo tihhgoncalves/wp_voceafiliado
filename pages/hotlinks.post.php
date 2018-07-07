@@ -1,4 +1,8 @@
 <?
+//die(print_r($_POST, true));
+
+if(!isset($_POST))
+  die(print_r($_POST, true));
 
 global $wpdb;
 $post = new tihh_db_mysql_sql_post($wpdb->prefix . 'vca_hotlinks');
@@ -6,7 +10,7 @@ $post = new tihh_db_mysql_sql_post($wpdb->prefix . 'vca_hotlinks');
 if(!empty(@$_POST['ID']))
   $post->id = $_POST['ID'];
 
-$post->AddFieldInteger('Page', $_POST['Page']);
+$post->AddFieldString('Pages', implode(',', $_POST['Pages']));
 $post->AddFieldString('Key', $_POST['Key']);
 
 $sql = $post->GetSQL();

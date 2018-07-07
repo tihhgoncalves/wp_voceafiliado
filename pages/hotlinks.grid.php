@@ -34,7 +34,7 @@ class vca_grid_hotlink extends WP_List_Table
   {
     $columns = array(
       'ID'          => 'ID',
-      'Page'        => 'Página',
+      'Pages'        => 'Páginas/Posts',
       'Key'         => 'Key',
       'Actions'     => 'Ações'
     );
@@ -62,8 +62,7 @@ class vca_grid_hotlink extends WP_List_Table
 
     global $wpdb;
 
-    $sql = 'SELECT HL.ID, PST.post_title Page, PST.ID post_id, HL.Key, PST.post_title FROM ' . $wpdb->prefix . 'vca_hotlinks HL';
-    $sql .= ' JOIN ' . $wpdb->prefix . 'posts PST ON(PST.ID = HL.Page)';
+    $sql = 'SELECT * FROM ' . $wpdb->prefix . 'vca_hotlinks';
 
     $data = $wpdb->get_results( $sql, 'ARRAY_A' );
 
@@ -73,19 +72,39 @@ class vca_grid_hotlink extends WP_List_Table
   }
 
 
-  public function column_default( $item, $column_name )
-  {
+  public function column_default( $item, $column_name ){
+
+    global $wpdb;
+
     switch( $column_name ) {
       case 'ID':
       case 'Key':
         return $item[ $column_name ];
 
-      case 'Page':
-        $link = get_permalink($item['post_id']);
-        return '<a href="' . $link . '" target="_blank">' . $item[ $column_name ] . '</a>';
+      case 'Pages':
+        $pages = explode(',', $item[ $column_name ]);
+        $html = null;
+        foreach($pages as $pg) {
+          $sql = 'SELECT * FROM ' . $wpdb->prefix . 'posts WHERE ID = ' . $pg;
+          $pages = $wpdb->get_results($sql, 'ARRAY_A');
+          $page = $pages[0];
+          $link = get_permalink($page['ID']);
+
+          switch($page['post_type']) {
+            case 'page':
+              $tipo = 'Página';
+              break;
+            case 'post':
+              $tipo = 'Artigo';
+              break;
+          }
+          $html .= '<a href="' . $link . '" target="_blank">' . '[' . $tipo . '] ' . $page['post_title'] . ($page['post_type'] == 'post'?' - ' . get_the_date('d/m/Y', $page['ID']):null) . '</a><br>';
+        }
+        return $html;
       case'Actions':
         $link_editar = 'admin.php?page=vca_hotlinks&a=edit&id=' . $item['ID'];
-        return '<a href="' . $link_editar . '">Editar</a> | <a href="#">Excluir</a>';
+        $link_excluir = 'admin.php?page=vca_hotlinks&a=del&id=' . $item['ID'];
+        return '<a href="' . $link_editar . '">Editar</a> | <a href="' . $link_excluir . '">Excluir</a>';
       default:
         return $column_name . '>>' . print_r( $item, true ) ;
     }

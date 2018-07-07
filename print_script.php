@@ -11,16 +11,14 @@
 
       global $wpdb;
 
-      $sql = 'SELECT ID, Page, `Key` FROM ' . $wpdb->prefix . 'vca_hotlinks';
-      $sql .= ' WHERE Page = ' . get_the_ID();
-
-
+      $id = get_the_ID();
+      $sql = 'SELECT ID, Pages, `Key` FROM ' . $wpdb->prefix . 'vca_hotlinks';
+      $sql .= " WHERE Pages = '$id' OR Pages LIKE '$id,%' OR Pages LIKE '%,$id' OR Pages LIKE '%,$id,%'";
 
       $data = $wpdb->get_results($sql, 'ARRAY_A');
 
       if (count($data) > 0) {
 
-        $page_id = $data[0]['Page'];
         $key = $data[0]['Key'];
 
 

@@ -1,6 +1,13 @@
-.vca h1 {
+.vca {
   background-image: url(../images/icone.svg);
   background-repeat: no-repeat;
-  background-position: right center;
-  background-size: auto 75%;
+  background-position: right top;
+  background-size: auto 30px;
+}
+.vca select,
+.vca input[type=text] {
+  width: 450px;
+}
+.vca select {
+  height: 175px!important;
 }

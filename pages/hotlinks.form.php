@@ -2,7 +2,7 @@
 global $wpdb;
 
 if(!empty(@$_GET['id'])){
-  $sql = 'SELECT ID, Page, `Key` FROM ' . $wpdb->prefix . 'vca_hotlinks HL';
+  $sql = 'SELECT ID, Pages, `Key` FROM ' . $wpdb->prefix . 'vca_hotlinks HL';
   $sql .= ' WHERE ID = ' . $_GET['id'];
 
   $data = $wpdb->get_results( $sql, 'ARRAY_A' );
@@ -12,10 +12,15 @@ if(!empty(@$_GET['id'])){
 
   $reg = $data[0];
 
+  $pages_ids = explode(',', $reg['Pages']);
+
 }
 
 //páginas...
-$sql = "SELECT * FROM `" . $wpdb->prefix . "posts` WHERE post_type = 'page' ORDER BY post_title ASC";
+$sql = "SELECT * FROM `" . $wpdb->prefix . "posts` ";
+$sql .= " WHERE (post_type = 'page' OR post_type = 'post') && post_status = 'publish'";
+$sql .= " ORDER BY post_type ASC, post_title ASC";
+
 $paginas = $wpdb->get_results( $sql, 'ARRAY_A' );
 
 hotlinks_html_head();
@@ -29,22 +34,40 @@ hotlinks_html_head();
     <?
   }
   ?>
+
+
 <table class="form-table">
 
   <tbody><tr>
     <th scope="row"><label for="blogname">Página</label></th>
     <td>
 
-      <select name="Page" id="Page" required>
-        <option value="" ></option>
+      <select name="Pages[]" id="Pages" required multiple>
         <?
         foreach($paginas as $pagina) {
+
+          switch($pagina['post_type']) {
+            case 'page':
+              $tipo = 'Página';
+              break;
+            case 'post':
+              $tipo = 'Artigo';
+              break;
+          }
+
+          $selected = null;
+          if(!empty(@$_GET['id'])){
+
+            if((array_search($pagina['ID'],$pages_ids) !== false))
+              $selected = 'selected';
+          }
           ?>
-          <option value="<?= $pagina['ID']; ?>" <?= ($pagina['ID'] == @$reg['Page'])?'selected':null; ?> ><?= $pagina['post_title']; ?></option>
+          <option value="<?= $pagina['ID']; ?>" <?= $selected ?> ><?= '[' . $tipo . '] ' . $pagina['post_title'] . ($pagina['post_type'] == 'post'?' - ' . get_the_date('d/m/Y', $pagina['ID']):null); ?></option>
           <?
         }
         ?>
-
+      </select>
+      <p class="description" id="tagline-description">Para selecionar mais de um registro, utiliza as teclas Ctrl e Shift.</p></td>
 
     </td>
   </tr>
@@ -59,5 +82,8 @@ hotlinks_html_head();
 
   </table>
 
-  <p class="submit"><input type="submit" name="submit" id="submit" class="button button-primary" value="Salvar alterações"></p>
+  <p class="submit">
+    <input type="submit" name="submit" id="submit" class="button button-primary" value="Salvar">
+    <a href="admin.php?page=vca_hotlinks" class="button ">Voltar</a>
+  </p>
 </form>
